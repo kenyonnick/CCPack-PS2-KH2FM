@@ -613,10 +613,9 @@ public class KH2FMCrowdControl
         public override bool StartEffect(IPS2Connector connector)
         {
             bool success = true;
+
             // Get us out of a Drive first if we are in one
             success &= connector.WriteFloat(ConstantAddresses.DriveTime, ConstantValues.None);
-
-            Thread.Sleep(200);
 
             int randomIndex = new Random().Next(values.Count);
 
@@ -650,6 +649,9 @@ public class KH2FMCrowdControl
                     success &= connector.Write16LE(ConstantAddresses.SoraFinalWeaponSlot, currentKeyblade);
                 }
             }
+
+            // Set here so that potentially the keyblades need a bit more time to load?
+            Thread.Sleep(1000);
 
             success &= connector.Write16LE(ConstantAddresses.ReactionPopup, (ushort)ConstantValues.None);
             success &= connector.Write16LE(ConstantAddresses.ReactionOption, (ushort)values[randomIndex]);
@@ -765,7 +767,7 @@ public class KH2FMCrowdControl
     private class SlowgaSora : Option
     {
         public SlowgaSora() : base("Slowga Sora", "Set Sora's Speed to be super slow.",
-            Category.Sora, SubCategory.None,
+            Category.Sora, SubCategory.Stats,
             EffectFunction.StartTimed, durationSeconds: 30)
         { }
 
@@ -998,7 +1000,8 @@ public class KH2FMCrowdControl
 
             // Get us out of a Drive first if we are in one
             success &= connector.WriteFloat(ConstantAddresses.DriveTime, ConstantValues.None);
-            Thread.Sleep(200);
+            
+            Thread.Sleep(1000);
 
             success &= connector.Write16LE(ConstantAddresses.ReactionPopup, (ushort)ConstantValues.None);
 
