@@ -383,6 +383,29 @@ public class KH2FMCrowdControl
         }
     }
 
+    public static void TriggerReaction(IPS2Connector connector) {
+        Timer timer = new()
+        {
+            AutoReset = true,
+            Enabled = true,
+            Interval = 10
+        };
+
+        timer.Elapsed += (obj, ev) =>
+        {
+            connector.Read16LE(ConstantAddresses.ReactionEnable, out ushort value);
+
+            if (value == 5 || DateTime.Compare(DateTime.Now, ev.SignalTime.AddSeconds(30)) > 0) timer.Stop();
+
+            connector.Write8((ulong)ConstantAddresses.ButtonPress, (byte)ConstantValues.Triangle);
+            connector.Write8(0x2034D3C1, 0x10);
+            connector.Write8(0x2034D4DD, 0xEF);
+            connector.Write8(0x2034D466, 0xFF);
+            connector.Write8(0x2034D4E6, 0xFF);
+        };
+        timer.Start();
+    }
+
     #region Option Implementations
     private class OneShotSora : Option
     {
@@ -654,26 +677,7 @@ public class KH2FMCrowdControl
             success &= connector.Write16LE(ConstantAddresses.ReactionEnable, (ushort)ConstantValues.None);
 
             // Might be able to move this to RepeatAction?
-            Timer timer = new()
-            {
-                AutoReset = true,
-                Enabled = true,
-                Interval = 10
-            };
-
-            timer.Elapsed += (obj, ev) =>
-            {
-                connector.Read16LE(ConstantAddresses.ReactionEnable, out ushort value);
-
-                if (value == 5 || DateTime.Compare(DateTime.Now, ev.SignalTime.AddSeconds(30)) > 0) timer.Stop();
-
-                connector.Write8((ulong)ConstantAddresses.ButtonPress, (byte)ConstantValues.Triangle);
-                connector.Write8(0x2034D3C1, 0x10);
-                connector.Write8(0x2034D4DD, 0xEF);
-                connector.Write8(0x2034D466, 0xFF);
-                connector.Write8(0x2034D4E6, 0xFF);
-            };
-            timer.Start();
+            TriggerReaction(connector);
 
             return success;
         }
@@ -993,17 +997,7 @@ public class KH2FMCrowdControl
 
             success &= connector.Write16LE(ConstantAddresses.ReactionEnable, (ushort)ConstantValues.None);
 
-            Timer timer = new(100);
-            timer.Elapsed += (_, _) =>
-            {
-                connector.Read16LE(ConstantAddresses.ReactionEnable, out ushort value);
-
-                if (value == 5) timer.Stop();
-
-                connector.Write8(ConstantAddresses.ButtonPress, (byte)ConstantValues.Triangle);
-            };
-            timer.Start();
-
+            TriggerReaction(connector);
             return success;
         }
 
