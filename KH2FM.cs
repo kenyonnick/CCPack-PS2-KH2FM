@@ -386,30 +386,28 @@ public class KH2FMCrowdControl
     #region Option Implementations
     private class OneShotSora : Option
     {
-        public OneShotSora() : base("1 Shot Sora", "Set Sora's Max and Current HP to 1.",
+        public OneShotSora() : base("1 Shot Sora", "Sora only has 1 HP until the effect is over",
             Category.Sora, SubCategory.Stats,
-            EffectFunction.StartTimed, durationSeconds: 60)
+            EffectFunction.RepeatAction, durationSeconds: 60)
         { }
 
-        private uint currentHP;
-        private uint maxHP;
-
-        public override bool StopEffect(IPS2Connector connector)
-        {
-            return connector.Write32LE(ConstantAddresses.HP, currentHP)
-                && connector.Write32LE(ConstantAddresses.MaxHP, maxHP);
-        }
 
         public override bool StartEffect(IPS2Connector connector)
         {
+            return connector.Write32LE(ConstantAddresses.HP, 1);
+        }
+
+        public override bool DoEffect(IPS2Connector connector)
+        {
+            return connector.Write32LE(ConstantAddresses.HP, 1);
+        }
+
+
+        public override bool StopEffect(IPS2Connector connector)
+        {
             bool success = true;
-            // Capture the original data so it can be reset
-            success &= connector.Read32LE(ConstantAddresses.HP, out currentHP);
-            success &= connector.Read32LE(ConstantAddresses.MaxHP, out maxHP);
-
-            success &= connector.Write32LE(ConstantAddresses.HP, 1);
-            success &= connector.Write32LE(ConstantAddresses.MaxHP, 1);
-
+            success &= connector.Read32LE(ConstantAddresses.MaxHP, out uint maxHP);
+            success &= connector.Write32LE(ConstantAddresses.HP, maxHP);
             return success;
         }
     }
@@ -836,27 +834,14 @@ public class KH2FMCrowdControl
             EffectFunction.StartTimed, durationSeconds: 60)
         { }
 
-        private uint currentWeaponSize;
-        private uint currentWeaponSizeAlt = 0;
-
         public override bool StartEffect(IPS2Connector connector)
         {
-            bool success = true;
-            success &= connector.Read32LE(ConstantAddresses.WeaponSize, out currentWeaponSize);
-            // The WeaponSizeAlt address seems to be some sort of transform value for the player character.
-            // Modifying it moves the player further away from the camera.
-            //connector.Read32LE(ConstantAddresses.WeaponSizeAlt, out currentWeaponSizeAlt);
-
-            success &= connector.Write32LE(ConstantAddresses.WeaponSize, ConstantValues.TinyWeapon);
-            //connector.Write32LE(ConstantAddresses.WeaponSizeAlt, ConstantValues.TinyWeapon);
-
-            return success;
+            return connector.Write32LE(ConstantAddresses.WeaponSize, ConstantValues.TinyWeapon);
         }
 
         public override bool StopEffect(IPS2Connector connector)
         {
-            return connector.Write32LE(ConstantAddresses.WeaponSize, currentWeaponSize);
-            //connector.Write32LE(ConstantAddresses.WeaponSizeAlt, currentWeaponSizeAlt);
+            return connector.Write32LE(ConstantAddresses.WeaponSize, ConstantValues.NormalWeapon);
         }
     }
 
@@ -867,25 +852,14 @@ public class KH2FMCrowdControl
             EffectFunction.StartTimed, durationSeconds: 60)
         { }
 
-        private uint currentWeaponSize;
-        private uint currentWeaponSizeAlt = 0;
-
         public override bool StartEffect(IPS2Connector connector)
         {
-            bool success = true;
-            success &= connector.Read32LE(ConstantAddresses.WeaponSize, out currentWeaponSize);
-            //connector.Read32LE(ConstantAddresses.WeaponSizeAlt, out currentWeaponSizeAlt);
-
-            success &= connector.Write32LE(ConstantAddresses.WeaponSize, ConstantValues.BigWeapon);
-            //connector.Write32LE(ConstantAddresses.WeaponSizeAlt, ConstantValues.TinyWeapon);
-
-            return success;
+            return connector.Write32LE(ConstantAddresses.WeaponSize, ConstantValues.BigWeapon);
         }
 
         public override bool StopEffect(IPS2Connector connector)
         {
-            return connector.Write32LE(ConstantAddresses.WeaponSize, currentWeaponSize);
-            //connector.Write32LE(ConstantAddresses.WeaponSizeAlt, currentWeaponSizeAlt);
+            return connector.Write32LE(ConstantAddresses.WeaponSize, ConstantValues.NormalWeapon);
         }
     }
 
@@ -896,17 +870,30 @@ public class KH2FMCrowdControl
             EffectFunction.StartTimed, durationSeconds: 60)
         { }
 
-        private ushort currentKeyblade;
+        private ushort? currentKeyblade = null;
 
         public override bool StartEffect(IPS2Connector connector)
         {
-            return connector.Read16LE(ConstantAddresses.SoraWeaponSlot, out currentKeyblade) &&
-                connector.Write16LE(ConstantAddresses.SoraWeaponSlot, ConstantValues.StruggleBat);
+            bool success = true;
+            success &= connector.Read16LE(ConstantAddresses.SoraWeaponSlot, out ushort currKeyblade);
+            // Only override the value that will be reset to at the end if there isn't a value currently queued for reset
+            if (currentKeyblade == null) {
+                currentKeyblade = currKeyblade;
+            }
+            success &= connector.Write16LE(ConstantAddresses.SoraWeaponSlot, ConstantValues.StruggleBat);
+            return success;
         }
 
         public override bool StopEffect(IPS2Connector connector)
         {
-            return connector.Write16LE(ConstantAddresses.SoraWeaponSlot, currentKeyblade);
+            bool success = true;
+            if (currentKeyblade != null) {
+                success &= connector.Write16LE(ConstantAddresses.SoraWeaponSlot, (ushort)currentKeyblade);
+                // Reset current keyblade so that the next invocation of the effect can overwrite it
+                currentKeyblade = null;
+            }
+
+            return success;
         }
     }
 
@@ -1018,23 +1005,10 @@ public class KH2FMCrowdControl
             timer.Start();
 
             return success;
-
-            //connector.Write16LE(ConstantAddresses.Sora, (ushort)ConstantValues.AntiFormSora);
-            ////connector.Write16LE(ConstantAddresses.HalloweenSora, (ushort)ConstantValues.AntiFormSora);
-            //connector.Write16LE(ConstantAddresses.ChristmasSora, (ushort)ConstantValues.AntiFormSora);
-            //connector.Write16LE(ConstantAddresses.LionSora, (ushort)ConstantValues.AntiFormSora);
-            //connector.Write16LE(ConstantAddresses.SpaceParanoidsSora, (ushort)ConstantValues.AntiFormSora);
-            //connector.Write16LE(ConstantAddresses.TimelessRiverSora, (ushort)ConstantValues.AntiFormSora);
         }
 
         public override bool StopEffect(IPS2Connector connector)
         {
-            //connector.Write16LE(ConstantAddresses.Sora, (ushort)ConstantValues.Sora);
-            ////connector.Write16LE(ConstantAddresses.HalloweenSora, (ushort)ConstantValues.HalloweenSora);
-            //connector.Write16LE(ConstantAddresses.ChristmasSora, (ushort)ConstantValues.ChristmasSora);
-            //connector.Write16LE(ConstantAddresses.LionSora, (ushort)ConstantValues.LionSora);
-            //connector.Write16LE(ConstantAddresses.SpaceParanoidsSora, (ushort)ConstantValues.SpaceParanoidsSora);
-            //connector.Write16LE(ConstantAddresses.TimelessRiverSora, (ushort)ConstantValues.TimelessRiverSora);
             return true;
         }
     }
@@ -1843,6 +1817,7 @@ public class KH2FMCrowdControl
         }
     }
 
+    // TODO: Convert this to RepeatAction
     private class ZeroSora : Option
     {
         public ZeroSora() : base("Zero Sora", "Set Sora to ZERO mode, including Stats, Items, Magic, Drives and Summons.",
