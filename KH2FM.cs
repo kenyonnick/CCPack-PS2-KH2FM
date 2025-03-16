@@ -10,33 +10,36 @@ using System.Linq;
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using CrowdControl.Games.SmartEffects;
 // ReSharper disable CommentTypo
 
-//ccpragma { "include" : [ ".\\Effects\\*.cs", ".\\Common\\**\*.cs" ] }
+//ccpragma { "include" : [ ".\\Effects\\*.cs", ".\\Common\\*.cs", ".\\Common\\Addresses\\*.cs", ".\\Common\\Values\\*.cs" ] }
 namespace CrowdControl.Games.Packs.KH2FM;
 
 [UsedImplicitly]
-public class KH2FM : PS2EffectPack
+public partial class KH2FM : PS2EffectPack, IHandlerCollection
 {
     public override Game Game { get; } = new(name: "Kingdom Hearts II: Final Mix", id: "KH2FM", path: "PS2", ConnectorType.PS2Connector);
 
     private readonly KH2FMCrowdControl kh2FMCrowdControl;
 
-    public override EffectList Effects { get; }
+    public override EffectList Effects { get; } = new Effect[] {
+        new("Heal Sora", EffectIds.HealSora) {
+            Price = 50,
+            Description = "Heal Sora to Max HP.",
+        },
+        new ("One Hit KO Sora", EffectIds.OneShotSora) {
+            Price = 50,
+            Description = "Sora only has 1 HP until the effect is over.",
+            Duration = SITimeSpan.FromSeconds(30)
+        },
+    };
 
     public KH2FM(UserRecord player, Func<CrowdControlBlock, bool> responseHandler, Action<object> statusUpdateHandler) : base(player, responseHandler, statusUpdateHandler)
     {
         Log.FileOutput = true;
 
         kh2FMCrowdControl = new KH2FMCrowdControl();
-        Effects = kh2FMCrowdControl.Options.Select(x => new Effect(x.Value.Name, x.Value.Id)
-        {
-            Price = (uint)x.Value.Cost,
-            Description = x.Value.Description,
-            Duration = SITimeSpan.FromSeconds(x.Value.DurationSeconds),
-            Category = x.Value.GetEffectCategory(),
-            Group = x.Value.GetEffectGroup(),
-        }).ToList();
 
         Timer timer = new(1000.0);
         timer.Elapsed += (_, _) =>
@@ -48,26 +51,6 @@ public class KH2FM : PS2EffectPack
         };
 
         timer.Start();
-    }
-
-    private bool GetOptionForRequest(EffectRequest request, [MaybeNullWhen(false)] out Option option)
-    {
-        string effectId = FinalCode(request);
-        Log.Debug($"Requested Effect Id (FinalCode): {effectId}");
-        var availableEffectIds = kh2FMCrowdControl.Options.Select((pair) => pair.Key).ToList();
-        Log.Debug("Available Effect Ids: " + string.Join(", ", availableEffectIds));
-        bool effectIsAvailable = kh2FMCrowdControl.Options.Any(x => x.Key == effectId);
-        Log.Debug($"Is Requested Effect Id Available: {effectIsAvailable}"); 
-        return kh2FMCrowdControl.Options.TryGetValue(effectId, out option);
-    }
-
-    private string[] GetOptionConflictsForRequest(string optionId)
-    {
-        if(kh2FMCrowdControl.OptionConflicts.TryGetValue(optionId, out string[]? conflicts)) {
-            return conflicts;
-        } else {
-            return new string[0];
-        }
     }
 
     #region Game State Checks
@@ -128,67 +111,67 @@ public class KH2FM : PS2EffectPack
 
     #endregion
 
-    protected override void StartEffect(EffectRequest request)
-    {
-        if (!GetOptionForRequest(request, out Option? option))
-        {
-            Respond(request, EffectStatus.FailPermanent, StandardErrors.UnknownEffect, request);
-            return;
-        }
+    // protected override void StartEffect(EffectRequest request)
+    // {
+    //     if (!GetOptionForRequest(request, out Option? option))
+    //     {
+    //         Respond(request, EffectStatus.FailPermanent, StandardErrors.UnknownEffect, request);
+    //         return;
+    //     }
 
-        string[] conflicts = GetOptionConflictsForRequest(option.Id);
+    //     string[] conflicts = GetOptionConflictsForRequest(option.Id);
 
-        switch (option.effectFunction)
-        {
-            case EffectFunction.StartTimed:
-                var timed = StartTimed(
-                    request: request,
-                    startCondition: () => IsGameInPlay(),
-                    continueCondition: () => IsGameInPlay(),
-                    continueConditionInterval: TimeSpan.FromMilliseconds(500),
-                    action: () => option.StartEffect(Connector),
-                    mutex: conflicts
-                );
-                timed.WhenCompleted.Then(_ => option.StopEffect(Connector));
-                break;
-            case EffectFunction.RepeatAction:
-                var action = RepeatAction(
-                    request: request,
-                    startCondition: () => IsGameInPlay(),
-                    startAction: () => option.StartEffect(Connector),
-                    startRetry: TimeSpan.FromSeconds(1),
-                    refreshCondition: () => IsGameInPlay(),
-                    refreshRetry: TimeSpan.FromMilliseconds(500),
-                    refreshAction: () => option.DoEffect(Connector),
-                    refreshInterval: TimeSpan.FromMilliseconds(option.RefreshInterval),
-                    extendOnFail: true,
-                    mutex: conflicts
-                );
-                action.WhenCompleted.Then(_ => option.StopEffect(Connector));
-                break;
-            default:
-                TryEffect(
-                    request: request,
-                    condition: () => IsGameInPlay(),
-                    action: () => option.StartEffect(Connector),
-                    followUp: () => option.StopEffect(Connector),
-                    retryDelay: TimeSpan.FromMilliseconds(500),
-                    retryOnFail: true,
-                    mutex: conflicts,
-                    holdMutex: TimeSpan.FromMilliseconds(500)
-                );
-                break;
+    //     switch (option.effectFunction)
+    //     {
+    //         case EffectFunction.StartTimed:
+    //             var timed = StartTimed(
+    //                 request: request,
+    //                 startCondition: () => IsGameInPlay(),
+    //                 continueCondition: () => IsGameInPlay(),
+    //                 continueConditionInterval: TimeSpan.FromMilliseconds(500),
+    //                 action: () => option.StartEffect(Connector),
+    //                 mutex: conflicts
+    //             );
+    //             timed.WhenCompleted.Then(_ => option.StopEffect(Connector));
+    //             break;
+    //         case EffectFunction.RepeatAction:
+    //             var action = RepeatAction(
+    //                 request: request,
+    //                 startCondition: () => IsGameInPlay(),
+    //                 startAction: () => option.StartEffect(Connector),
+    //                 startRetry: TimeSpan.FromSeconds(1),
+    //                 refreshCondition: () => IsGameInPlay(),
+    //                 refreshRetry: TimeSpan.FromMilliseconds(500),
+    //                 refreshAction: () => option.DoEffect(Connector),
+    //                 refreshInterval: TimeSpan.FromMilliseconds(option.RefreshInterval),
+    //                 extendOnFail: true,
+    //                 mutex: conflicts
+    //             );
+    //             action.WhenCompleted.Then(_ => option.StopEffect(Connector));
+    //             break;
+    //         default:
+    //             TryEffect(
+    //                 request: request,
+    //                 condition: () => IsGameInPlay(),
+    //                 action: () => option.StartEffect(Connector),
+    //                 followUp: () => option.StopEffect(Connector),
+    //                 retryDelay: TimeSpan.FromMilliseconds(500),
+    //                 retryOnFail: true,
+    //                 mutex: conflicts,
+    //                 holdMutex: TimeSpan.FromMilliseconds(500)
+    //             );
+    //             break;
 
-        }
-    }
+    //     }
+    // }
 
-    protected override bool StopEffect(EffectRequest request)
-    {
-        Log.Message($"[StopEffect] request.EffectId = {request.EffectID}");
+    // protected override bool StopEffect(EffectRequest request)
+    // {
+    //     Log.Message($"[StopEffect] request.EffectId = {request.EffectID}");
 
-        if (GetOptionForRequest(request, out Option? option)) return option.StopEffect(Connector);
-        return base.StopEffect(request);
-    }
+    //     if (GetOptionForRequest(request, out Option? option)) return option.StopEffect(Connector);
+    //     return base.StopEffect(request);
+    // }
 
     public override bool StopAllEffects()
     {
@@ -277,7 +260,7 @@ public class KH2FMCrowdControl
     public KH2FMCrowdControl()
     {
         OneShotSora oneShotSora = new OneShotSora();
-        HealSora healSora = new HealSora();
+        // HealSora healSora = new HealSora();
         Invulnerability invulnerability = new Invulnerability();
         MoneybagsSora moneybagsSora = new MoneybagsSora();
         RobSora robSora = new RobSora();
@@ -306,7 +289,7 @@ public class KH2FMCrowdControl
         Options = new List<Option>
             {
                 oneShotSora,
-                healSora,
+                // healSora,
                 invulnerability,
                 moneybagsSora,
                 robSora,
@@ -331,8 +314,8 @@ public class KH2FMCrowdControl
         // Used to populate mutexes
         OptionConflicts = new Dictionary<string, string[]>
             {
-                { oneShotSora.Id, [oneShotSora.Id, healSora.Id, invulnerability.Id] },
-                { healSora.Id, [healSora.Id, oneShotSora.Id, invulnerability.Id] },
+                // { oneShotSora.Id, [oneShotSora.Id, healSora.Id, invulnerability.Id] },
+                // { healSora.Id, [healSora.Id, oneShotSora.Id, invulnerability.Id] },
                 { tinyWeapon.Id, [tinyWeapon.Id, giantWeapon.Id] },
                 { giantWeapon.Id, [tinyWeapon.Id, giantWeapon.Id] },
                 { iAmDarkness.Id, [iAmDarkness.Id, backseatDriver.Id, heroSora.Id, zeroSora.Id] },
@@ -431,16 +414,16 @@ public class KH2FMCrowdControl
         }
     }
 
-    private class HealSora : Option
-    {
-        public HealSora() : base("Heal Sora", "Heal Sora to Max HP.", Category.Sora, SubCategory.Stats, EffectFunction.TryEffect) { }
+    // private class HealSora : Option
+    // {
+    //     public HealSora() : base("Heal Sora", "Heal Sora to Max HP.", Category.Sora, SubCategory.Stats, EffectFunction.TryEffect) { }
 
-        public override bool StartEffect(IPS2Connector connector)
-        {
-            return connector.Read32LE(StatAddresses.MaxHP, out uint maxHP)
-                && connector.Write32LE(StatAddresses.HP, maxHP);
-        }
-    }
+    //     public override bool StartEffect(IPS2Connector connector)
+    //     {
+    //         return connector.Read32LE(StatAddresses.MaxHP, out uint maxHP)
+    //             && connector.Write32LE(StatAddresses.HP, maxHP);
+    //     }
+    // }
 
     private class Invulnerability : Option
     {
