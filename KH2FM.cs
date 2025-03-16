@@ -33,6 +33,11 @@ public partial class KH2FM : PS2EffectPack, IHandlerCollection
             Description = "Sora only has 1 HP until the effect is over.",
             Duration = SITimeSpan.FromSeconds(30)
         },
+        new ("Invulnerability", EffectIds.Invulnerability) {
+            Price = 50,
+            Description = "Continuously restore Sora's HP, making him nearly impossible to kill.",
+            Duration = SITimeSpan.FromSeconds(30)
+        },
     };
 
     public KH2FM(UserRecord player, Func<CrowdControlBlock, bool> responseHandler, Action<object> statusUpdateHandler) : base(player, responseHandler, statusUpdateHandler)
@@ -55,7 +60,7 @@ public partial class KH2FM : PS2EffectPack, IHandlerCollection
 
     #region Game State Checks
 
-    private bool IsGameInPlay() => IsReady(null);
+    public bool IsGameInPlay() => IsReady(null);
 
     // do all actual statechecking here - kat
     protected override GameState GetGameState()
@@ -110,68 +115,6 @@ public partial class KH2FM : PS2EffectPack, IHandlerCollection
     }
 
     #endregion
-
-    // protected override void StartEffect(EffectRequest request)
-    // {
-    //     if (!GetOptionForRequest(request, out Option? option))
-    //     {
-    //         Respond(request, EffectStatus.FailPermanent, StandardErrors.UnknownEffect, request);
-    //         return;
-    //     }
-
-    //     string[] conflicts = GetOptionConflictsForRequest(option.Id);
-
-    //     switch (option.effectFunction)
-    //     {
-    //         case EffectFunction.StartTimed:
-    //             var timed = StartTimed(
-    //                 request: request,
-    //                 startCondition: () => IsGameInPlay(),
-    //                 continueCondition: () => IsGameInPlay(),
-    //                 continueConditionInterval: TimeSpan.FromMilliseconds(500),
-    //                 action: () => option.StartEffect(Connector),
-    //                 mutex: conflicts
-    //             );
-    //             timed.WhenCompleted.Then(_ => option.StopEffect(Connector));
-    //             break;
-    //         case EffectFunction.RepeatAction:
-    //             var action = RepeatAction(
-    //                 request: request,
-    //                 startCondition: () => IsGameInPlay(),
-    //                 startAction: () => option.StartEffect(Connector),
-    //                 startRetry: TimeSpan.FromSeconds(1),
-    //                 refreshCondition: () => IsGameInPlay(),
-    //                 refreshRetry: TimeSpan.FromMilliseconds(500),
-    //                 refreshAction: () => option.DoEffect(Connector),
-    //                 refreshInterval: TimeSpan.FromMilliseconds(option.RefreshInterval),
-    //                 extendOnFail: true,
-    //                 mutex: conflicts
-    //             );
-    //             action.WhenCompleted.Then(_ => option.StopEffect(Connector));
-    //             break;
-    //         default:
-    //             TryEffect(
-    //                 request: request,
-    //                 condition: () => IsGameInPlay(),
-    //                 action: () => option.StartEffect(Connector),
-    //                 followUp: () => option.StopEffect(Connector),
-    //                 retryDelay: TimeSpan.FromMilliseconds(500),
-    //                 retryOnFail: true,
-    //                 mutex: conflicts,
-    //                 holdMutex: TimeSpan.FromMilliseconds(500)
-    //             );
-    //             break;
-
-    //     }
-    // }
-
-    // protected override bool StopEffect(EffectRequest request)
-    // {
-    //     Log.Message($"[StopEffect] request.EffectId = {request.EffectID}");
-
-    //     if (GetOptionForRequest(request, out Option? option)) return option.StopEffect(Connector);
-    //     return base.StopEffect(request);
-    // }
 
     public override bool StopAllEffects()
     {
@@ -259,9 +202,6 @@ public class KH2FMCrowdControl
 
     public KH2FMCrowdControl()
     {
-        OneShotSora oneShotSora = new OneShotSora();
-        // HealSora healSora = new HealSora();
-        Invulnerability invulnerability = new Invulnerability();
         MoneybagsSora moneybagsSora = new MoneybagsSora();
         RobSora robSora = new RobSora();
         GrowthSpurt growthSpurt = new GrowthSpurt();
@@ -288,9 +228,6 @@ public class KH2FMCrowdControl
 
         Options = new List<Option>
             {
-                oneShotSora,
-                // healSora,
-                invulnerability,
                 moneybagsSora,
                 robSora,
                 growthSpurt,
@@ -314,8 +251,6 @@ public class KH2FMCrowdControl
         // Used to populate mutexes
         OptionConflicts = new Dictionary<string, string[]>
             {
-                // { oneShotSora.Id, [oneShotSora.Id, healSora.Id, invulnerability.Id] },
-                // { healSora.Id, [healSora.Id, oneShotSora.Id, invulnerability.Id] },
                 { tinyWeapon.Id, [tinyWeapon.Id, giantWeapon.Id] },
                 { giantWeapon.Id, [tinyWeapon.Id, giantWeapon.Id] },
                 { iAmDarkness.Id, [iAmDarkness.Id, backseatDriver.Id, heroSora.Id, zeroSora.Id] },
@@ -386,73 +321,35 @@ public class KH2FMCrowdControl
     }
 
     #region Option Implementations
-    private class OneShotSora : Option
-    {
-        public OneShotSora() : base("1 Shot Sora", "Sora only has 1 HP until the effect is over",
-            Category.Sora, SubCategory.Stats,
-            EffectFunction.RepeatAction, durationSeconds: 60)
-        { }
 
-
-        public override bool StartEffect(IPS2Connector connector)
-        {
-            return connector.Write32LE(StatAddresses.HP, 1);
-        }
-
-        public override bool DoEffect(IPS2Connector connector)
-        {
-            return connector.Write32LE(StatAddresses.HP, 1);
-        }
-
-
-        public override bool StopEffect(IPS2Connector connector)
-        {
-            bool success = true;
-            success &= connector.Read32LE(StatAddresses.MaxHP, out uint maxHP);
-            success &= connector.Write32LE(StatAddresses.HP, maxHP);
-            return success;
-        }
-    }
-
-    // private class HealSora : Option
+    // private class Invulnerability : Option
     // {
-    //     public HealSora() : base("Heal Sora", "Heal Sora to Max HP.", Category.Sora, SubCategory.Stats, EffectFunction.TryEffect) { }
+    //     private uint currentHP;
+    //     private uint maxHP;
+
+    //     public Invulnerability() : base("Invulnerability", "Set Sora to be invulnerable.",
+    //         Category.Sora, SubCategory.Stats,
+    //         EffectFunction.RepeatAction, durationSeconds: 60)
+    //     { }
 
     //     public override bool StartEffect(IPS2Connector connector)
     //     {
-    //         return connector.Read32LE(StatAddresses.MaxHP, out uint maxHP)
-    //             && connector.Write32LE(StatAddresses.HP, maxHP);
+    //         return connector.Read32LE(StatAddresses.HP, out currentHP)
+    //             && connector.Read32LE(StatAddresses.MaxHP, out maxHP);
+    //     }
+
+    //     public override bool DoEffect(IPS2Connector connector)
+    //     {
+    //         return connector.Write32LE(StatAddresses.HP, 999)
+    //             && connector.Write32LE(StatAddresses.MaxHP, 999);
+    //     }
+
+    //     public override bool StopEffect(IPS2Connector connector)
+    //     {
+    //         return connector.Write32LE(StatAddresses.HP, currentHP)
+    //             && connector.Write32LE(StatAddresses.MaxHP, maxHP);
     //     }
     // }
-
-    private class Invulnerability : Option
-    {
-        private uint currentHP;
-        private uint maxHP;
-
-        public Invulnerability() : base("Invulnerability", "Set Sora to be invulnerable.",
-            Category.Sora, SubCategory.Stats,
-            EffectFunction.RepeatAction, durationSeconds: 60)
-        { }
-
-        public override bool StartEffect(IPS2Connector connector)
-        {
-            return connector.Read32LE(StatAddresses.HP, out currentHP)
-                && connector.Read32LE(StatAddresses.MaxHP, out maxHP);
-        }
-
-        public override bool DoEffect(IPS2Connector connector)
-        {
-            return connector.Write32LE(StatAddresses.HP, 999)
-                && connector.Write32LE(StatAddresses.MaxHP, 999);
-        }
-
-        public override bool StopEffect(IPS2Connector connector)
-        {
-            return connector.Write32LE(StatAddresses.HP, currentHP)
-                && connector.Write32LE(StatAddresses.MaxHP, maxHP);
-        }
-    }
 
     private class MoneybagsSora : Option
     {
