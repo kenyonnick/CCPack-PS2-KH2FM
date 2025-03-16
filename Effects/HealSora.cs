@@ -7,7 +7,7 @@ namespace CrowdControl.Games.Packs.KH2FM;
 
 public partial class KH2FM {
     [EffectHandler("heal_sora")]
-    public class HealSora : EffectHandler<KH2FM, IPS2Connector>
+    public class HealSora : BaseEffect
     {
         public HealSora(KH2FM pack) : base(pack) { }
 

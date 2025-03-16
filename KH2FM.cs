@@ -38,6 +38,16 @@ public partial class KH2FM : PS2EffectPack, IHandlerCollection
             Description = "Continuously restore Sora's HP, making him nearly impossible to kill.",
             Duration = SITimeSpan.FromSeconds(30)
         },
+        new("Give Munny", EffectIds.GiveMunny) {
+            Price = 50,
+            Description = "Give Munny to Sora",
+            Quantity = 1000,
+        },
+        new("Take Munny", EffectIds.TakeMunny) {
+            Price = 50,
+            Description = "Take Munny from Sora",
+            Quantity = 1000,
+        },
     };
 
     public KH2FM(UserRecord player, Func<CrowdControlBlock, bool> responseHandler, Action<object> statusUpdateHandler) : base(player, responseHandler, statusUpdateHandler)
@@ -321,35 +331,6 @@ public class KH2FMCrowdControl
     }
 
     #region Option Implementations
-
-    // private class Invulnerability : Option
-    // {
-    //     private uint currentHP;
-    //     private uint maxHP;
-
-    //     public Invulnerability() : base("Invulnerability", "Set Sora to be invulnerable.",
-    //         Category.Sora, SubCategory.Stats,
-    //         EffectFunction.RepeatAction, durationSeconds: 60)
-    //     { }
-
-    //     public override bool StartEffect(IPS2Connector connector)
-    //     {
-    //         return connector.Read32LE(StatAddresses.HP, out currentHP)
-    //             && connector.Read32LE(StatAddresses.MaxHP, out maxHP);
-    //     }
-
-    //     public override bool DoEffect(IPS2Connector connector)
-    //     {
-    //         return connector.Write32LE(StatAddresses.HP, 999)
-    //             && connector.Write32LE(StatAddresses.MaxHP, 999);
-    //     }
-
-    //     public override bool StopEffect(IPS2Connector connector)
-    //     {
-    //         return connector.Write32LE(StatAddresses.HP, currentHP)
-    //             && connector.Write32LE(StatAddresses.MaxHP, maxHP);
-    //     }
-    // }
 
     private class MoneybagsSora : Option
     {
