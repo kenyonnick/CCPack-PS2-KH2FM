@@ -21,6 +21,7 @@ public partial class KH2FM {
             EffectIds.AmnesiacMagician,
             EffectIds.HeroSora,
             EffectIds.ZeroSora,
+            EffectIds.Defenseless,
          };
 
         private byte fire;

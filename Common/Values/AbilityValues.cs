@@ -140,4 +140,9 @@ public static class AbilityValues {
     public static int SimbaAbilityCount = 18;
     public static int TronAbilityCount = 18;
     public static int RikuAbilityCount = 22;
+
+    public static int GuardToggleValue = 128;
+    //public static int DodgeRollToggleValue = 128;
+
+    public static int OffToggleAbilityValue = 128;
 }

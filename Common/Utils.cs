@@ -56,4 +56,23 @@ public static class Utils {
         };
         timer.Start();
     }
+
+    public static int? FindAbilityMemory(IPS2Connector connector, int startAddress, int abilityCount, ushort abilityToFind)
+    {
+        int? value = null;
+
+        // First Byte is the Ability ID, Second Byte is the On/Off Byte
+        for (int offset = 0; offset < (abilityCount * 2); offset += 2)
+        {
+            connector.Read8(startAddress + offset, out byte tempValue);
+
+            if (tempValue == abilityToFind)
+            {
+                value = (startAddress + offset);
+                break;
+            }
+        }
+
+        return value;
+    }
 }

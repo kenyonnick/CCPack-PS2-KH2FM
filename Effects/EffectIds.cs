@@ -39,4 +39,6 @@ public static class EffectIds {
     public static string KillSora = "kill_sora";
     public static string RandomizeControls = "randomize_controls";
 
+    public static string Defenseless = "defenseless_sora";
+    public static string FullDefense = "full_defense_sora";
 }

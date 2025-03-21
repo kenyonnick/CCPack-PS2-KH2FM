@@ -22,7 +22,7 @@ public partial class KH2FM : PS2EffectPack, IHandlerCollection
     public override Game Game { get; } = new(name: "Kingdom Hearts II: Final Mix", id: "KH2FM", path: "PS2", ConnectorType.PS2Connector);
 
     public override EffectList Effects { get; } = new Effect[] {
-        new("Heal Sora", EffectIds.HealSora) {
+        new ("Heal Sora", EffectIds.HealSora) {
             Price = 50,
             Description = "Heal Sora to Max HP.",
         },
@@ -170,14 +170,24 @@ public partial class KH2FM : PS2EffectPack, IHandlerCollection
         },
         new ("Pro Codes", EffectIds.ProCodes) {
             Price = 50,
-            Description = "Set Sora to consistently lose HP, MP and Drive Gauges",
+            Description = "Set Sora to consistently lose HP, MP and Drive Gauges.",
             Duration = SITimeSpan.FromSeconds(60)
         },
         new ("EZ Codes", EffectIds.EzCodes) {
             Price = 50,
-            Description = "Set Sora to consistently gain HP, MP and Drive Gauges",
+            Description = "Set Sora to consistently gain HP, MP and Drive Gauges.",
             Duration = SITimeSpan.FromSeconds(60)
         },
+        new ("Defenseless", EffectIds.Defenseless) {
+            Price = 50,
+            Description = "Disable Sora's ability to block, reflect and dodge.",
+            Duration = SITimeSpan.FromSeconds(60)
+        },
+        new ("Full Defense", EffectIds.FullDefense) {
+            Price = 50,
+            Description = "Disable Sora's ability to block, reflect and dodge.",
+            Duration = SITimeSpan.FromSeconds(60)
+        }
     };
 
     public KH2FM(UserRecord player, Func<CrowdControlBlock, bool> responseHandler, Action<object> statusUpdateHandler) : base(player, responseHandler, statusUpdateHandler)
