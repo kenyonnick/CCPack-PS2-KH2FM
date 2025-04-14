@@ -11,7 +11,11 @@ public partial class KH2FM {
 
         public override EffectHandlerType Type => EffectHandlerType.Durational;
 
-        public override IList<String> Codes { get; } = [EffectIds.ProCodes, EffectIds.EzCodes];
+        // Refresh every second so that we don't just 
+        // tear through the values too quickly.
+        public override SITimeSpan RefreshInterval { get; } = 1.0f;
+
+        public override IList<String> Codes { get; } = new [] { EffectIds.ProCodes, EffectIds.EzCodes };
 
         public override Mutex Mutexes { get; } =
         [
