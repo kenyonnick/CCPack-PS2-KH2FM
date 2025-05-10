@@ -31,13 +31,13 @@ public partial class KH2FM : PS2EffectPack, IHandlerCollection
             Duration = SITimeSpan.FromSeconds(30)
         },
         new("Give Munny", EffectIds.GiveMunny) {
-            Price = 50,
-            Description = "Give Munny to Sora",
+            Price = 5,
+            Description = "Give Munny to Sora in increments of 10.",
             Quantity = 1000,
         },
         new("Take Munny", EffectIds.TakeMunny) {
-            Price = 50,
-            Description = "Take Munny from Sora",
+            Price = 5,
+            Description = "Take Munny from Sora in increments of 10.",
             Quantity = 1000,
         },
         new ("Tiny Weapon", EffectIds.TinyWeapon) {
@@ -55,11 +55,6 @@ public partial class KH2FM : PS2EffectPack, IHandlerCollection
             Description = "Change Sora's weapon to the Struggle Bat.",
             Duration = SITimeSpan.FromSeconds(60)
         },
-        // new ("Ultima", EffectIds.Ultima) {
-        //     Price = 50,
-        //     Description = "Change Sora's weapon to the Ultima Weapon",
-        //     Duration = SITimeSpan.FromSeconds(60)
-        // },
         new ("I Am Darkness", EffectIds.IAmDarkness) {
             Price = 50,
             Description = "Force Sora into Anti Form.",
@@ -93,45 +88,36 @@ public partial class KH2FM : PS2EffectPack, IHandlerCollection
             Description = "Give Sora Max Growth Abilities.",
             Duration = SITimeSpan.FromSeconds(60)
         },
-        new ("Hastega", EffectIds.Hastega) {
-            Price = 50,
-            Description = "Set Sora's Speed to be super fast.",
-            Duration = SITimeSpan.FromSeconds(60)
-        },
-        new ("Slowga", EffectIds.Slowga) {
-            Price = 50,
-            Description = "Set Sora's Speed to be super slow.",
-            Duration = SITimeSpan.FromSeconds(60)
-        },
-        new ("Who Am I?", EffectIds.WhoAmI) {
-            Price = 50,
-            Description = "Set Sora to a random different character or outfit.",
-            Duration = SITimeSpan.FromSeconds(60)
-        },
-        new ("Who Are They?", EffectIds.WhoAreThey) {
-            Price = 50,
-            Description = "Set Donald and Goofy to random allies or oufits.",
-            Duration = SITimeSpan.FromSeconds(60)
-        },
-        new ("Hostile Party", EffectIds.HostileParty) {
-            Price = 50,
-            Description = "Set Donald and Goofy to random enemies.",
-            Duration = SITimeSpan.FromSeconds(60)
-        },
+        // new ("Hastega", EffectIds.Hastega) {
+        //     Price = 50,
+        //     Description = "Set Sora's Speed to be super fast.",
+        //     Duration = SITimeSpan.FromSeconds(60)
+        // },
+        // new ("Slowga", EffectIds.Slowga) {
+        //     Price = 50,
+        //     Description = "Set Sora's Speed to be super slow.",
+        //     Duration = SITimeSpan.FromSeconds(60)
+        // },
+        // new ("Who Am I?", EffectIds.WhoAmI) {
+        //     Price = 50,
+        //     Description = "Set Sora to a random different character or outfit.",
+        //     Duration = SITimeSpan.FromSeconds(60)
+        // },
+        // new ("Who Are They?", EffectIds.WhoAreThey) {
+        //     Price = 50,
+        //     Description = "Set Donald and Goofy to random allies or oufits.",
+        //     Duration = SITimeSpan.FromSeconds(60)
+        // },
+        // new ("Hostile Party", EffectIds.HostileParty) {
+        //     Price = 50,
+        //     Description = "Set Donald and Goofy to random enemies.",
+        //     Duration = SITimeSpan.FromSeconds(60)
+        // },
         new ("Shuffle Shortcuts", EffectIds.ShuffleShortcuts) {
             Price = 50,
             Description = "Set Sora's Shortcuts to random commands.",
             Duration = SITimeSpan.FromSeconds(60)
         },
-        // new ("Kill Sora", EffectIds.KillSora) {
-        //     Price = 50,
-        //     Description = "Instantly Kill Sora.",
-        // },
-        // new ("Randomize Controls", EffectIds.RandomizeControls) {
-        //     Price = 50,
-        //     Description = "Randomize the controls to the game.",
-        //     Duration = SITimeSpan.FromSeconds(60)
-        // },
         new ("Expert Magician", EffectIds.ExpertMagician) {
             Price = 50,
             Description = "Give Sora Max Magic and lower the cost of Magic.",
@@ -145,6 +131,26 @@ public partial class KH2FM : PS2EffectPack, IHandlerCollection
         new ("Itemaholic", EffectIds.Itemaholic) {
             Price = 50,
             Description = "Fill Sora's inventory with all items, accessories, armor and weapons.",
+            Duration = SITimeSpan.FromSeconds(60)
+        },
+        new ("Give all Base Items", EffectIds.AllBaseItems) {
+            Price = 50,
+            Description = "Add 8 of each base item to the party's inventory.",
+            Duration = SITimeSpan.FromSeconds(60)
+        },
+        new ("Give all Accessory", EffectIds.AllAccessories) {
+            Price = 50,
+            Description = "Add 8 of each accessory to the party's inventory.",
+            Duration = SITimeSpan.FromSeconds(60)
+        },
+        new ("Give all Armors", EffectIds.AllAccessories) {
+            Price = 50,
+            Description = "Add 8 of each armor to the party's inventory.",
+            Duration = SITimeSpan.FromSeconds(60)
+        },
+        new ("Give all Keyblades", EffectIds.AllAccessories) {
+            Price = 50,
+            Description = "Grant Sora access to all keyblades.",
             Duration = SITimeSpan.FromSeconds(60)
         },
         new ("Spring Cleaning", EffectIds.SpringCleaning) {
