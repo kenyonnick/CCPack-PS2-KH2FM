@@ -143,12 +143,12 @@ public partial class KH2FM : PS2EffectPack, IHandlerCollection
             Description = "Add 8 of each accessory to the party's inventory.",
             Duration = SITimeSpan.FromSeconds(60)
         },
-        new ("Give all Armors", EffectIds.AllAccessories) {
+        new ("Give all Armors", EffectIds.AllArmors) {
             Price = 50,
             Description = "Add 8 of each armor to the party's inventory.",
             Duration = SITimeSpan.FromSeconds(60)
         },
-        new ("Give all Keyblades", EffectIds.AllAccessories) {
+        new ("Give all Keyblades", EffectIds.AllKeyblades) {
             Price = 50,
             Description = "Grant Sora access to all keyblades.",
             Duration = SITimeSpan.FromSeconds(60)
