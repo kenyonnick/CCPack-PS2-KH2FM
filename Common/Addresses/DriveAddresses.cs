@@ -1,6 +1,8 @@
 namespace CrowdControl.Games.Packs.KH2FM;
 
-public static class DriveAddresses {
+public static class DriveAddresses
+{
+    public static uint DriveFill = 0x21C6C900;
     public static uint Drive = 0x21C6C901;
     public static uint MaxDrive = 0x21C6C902;
     public static uint DriveTime = 0x21C6C904;
