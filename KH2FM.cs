@@ -98,21 +98,21 @@ public partial class KH2FM : PS2EffectPack, IHandlerCollection
         //     Description = "Set Sora's Speed to be super slow.",
         //     Duration = SITimeSpan.FromSeconds(60)
         // },
-         // new ("Who Am I?", EffectIds.WhoAmI) {
-         //     Price = 50,
-         //     Description = "Set Sora to a random different character or outfit.",
-         //     Duration = SITimeSpan.FromSeconds(60)
-         // },
-         // new ("Who Are They?", EffectIds.WhoAreThey) {
-         //     Price = 50,
-         //     Description = "Set Donald and Goofy to random allies or oufits.",
-         //     Duration = SITimeSpan.FromSeconds(60)
-         // },
-         // new ("Hostile Party", EffectIds.HostileParty) {
-         //     Price = 50,
-         //     Description = "Set Donald and Goofy to random enemies.",
-         //     Duration = SITimeSpan.FromSeconds(60)
-         // },
+        // new ("Who Am I?", EffectIds.WhoAmI) {
+        //     Price = 50,
+        //     Description = "Set Sora to a random different character or outfit.",
+        //     Duration = SITimeSpan.FromSeconds(60)
+        // },
+        // new ("Who Are They?", EffectIds.WhoAreThey) {
+        //     Price = 50,
+        //     Description = "Set Donald and Goofy to random allies or oufits.",
+        //     Duration = SITimeSpan.FromSeconds(60)
+        // },
+        // new ("Hostile Party", EffectIds.HostileParty) {
+        //     Price = 50,
+        //     Description = "Set Donald and Goofy to random enemies.",
+        //     Duration = SITimeSpan.FromSeconds(60)
+        // },
         new ("Shuffle Shortcuts", EffectIds.ShuffleShortcuts) {
             Price = 50,
             Description = "Set Sora's Shortcuts to random commands.",
