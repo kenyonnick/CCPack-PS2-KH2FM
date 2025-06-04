@@ -1,8 +1,5 @@
 using ConnectorLib;
 using CrowdControl.Games.SmartEffects;
-using System;
-using System.Collections.Generic;
-using System.Threading;
 
 namespace CrowdControl.Games.Packs.KH2FM;
 
@@ -14,9 +11,9 @@ public partial class KH2FM {
 
         public override EffectHandlerType Type => EffectHandlerType.Instant;
 
-        public override IList<String> Codes { get; } = new [] { EffectIds.IAmDarkness };
+        public override IList<String> Codes { get; } = [EffectIds.IAmDarkness];
 
-        public override IList<String> Mutexes { get; } = new [] { EffectIds.IAmDarkness, EffectIds.BackseatDriver, EffectIds.HeroSora, EffectIds.ZeroSora };
+        public override Mutex Mutexes { get; } = [EffectIds.IAmDarkness, EffectIds.BackseatDriver, EffectIds.HeroSora, EffectIds.ZeroSora];
 
         public override bool StartAction()
         {

@@ -1,7 +1,5 @@
 using ConnectorLib;
 using CrowdControl.Games.SmartEffects;
-using System;
-using System.Collections.Generic;
 
 namespace CrowdControl.Games.Packs.KH2FM;
 
@@ -13,11 +11,11 @@ public partial class KH2FM {
 
         public override EffectHandlerType Type => EffectHandlerType.Instant;
 
-        public override IList<(string, Type)> Parameters { get; } = new[] { ("quantity", typeof(int)) };
+        public override IList<(string, Type)> Parameters { get; } = [("quantity", typeof(int))];
 
-        public override IList<String> Codes { get; } = new [] { EffectIds.GiveMunny, EffectIds.TakeMunny };
+        public override IList<String> Codes { get; } = [EffectIds.GiveMunny, EffectIds.TakeMunny];
 
-        public override IList<String> Mutexes { get; } = new [] { EffectIds.HealSora, EffectIds.OneShotSora, EffectIds.Invulnerability };
+        public override Mutex Mutexes { get; } = [EffectIds.HealSora, EffectIds.OneShotSora, EffectIds.Invulnerability];
 
         public override bool StartAction()
         {

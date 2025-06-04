@@ -1,7 +1,5 @@
 using ConnectorLib;
 using CrowdControl.Games.SmartEffects;
-using System;
-using System.Collections.Generic;
 
 namespace CrowdControl.Games.Packs.KH2FM;
 
@@ -15,9 +13,9 @@ public partial class KH2FM {
 
         public override EffectHandlerType Type => EffectHandlerType.Durational;
 
-        public override IList<String> Codes { get; } = new [] { EffectIds.TinyWeapon, EffectIds.GiantWeapon };
+        public override IList<String> Codes { get; } = [EffectIds.TinyWeapon, EffectIds.GiantWeapon];
 
-        public override IList<String> Mutexes { get; } = new [] { EffectIds.TinyWeapon, EffectIds.GiantWeapon };
+        public override Mutex Mutexes { get; } = [EffectIds.TinyWeapon, EffectIds.GiantWeapon];
 
         public override bool StartAction()
         {

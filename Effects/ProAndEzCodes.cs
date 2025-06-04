@@ -1,8 +1,5 @@
 using ConnectorLib;
-using CrowdControl.Common;
 using CrowdControl.Games.SmartEffects;
-using System;
-using System.Collections.Generic;
 
 namespace CrowdControl.Games.Packs.KH2FM;
 
@@ -14,15 +11,16 @@ public partial class KH2FM {
 
         public override EffectHandlerType Type => EffectHandlerType.Durational;
 
-        public override IList<String> Codes { get; } = new [] { EffectIds.ProCodes, EffectIds.EzCodes };
+        public override IList<String> Codes { get; } = [EffectIds.ProCodes, EffectIds.EzCodes];
 
-        public override IList<String> Mutexes { get; } = new [] { 
+        public override Mutex Mutexes { get; } =
+        [
             EffectIds.HealSora, 
             EffectIds.OneShotSora, 
             EffectIds.Invulnerability,
             EffectIds.ProCodes,
             EffectIds.EzCodes
-        };
+        ];
 
         // Clamps the value to be between the 5% of the maximum value and the maximum value
         private float Clamp(float value, float max) {

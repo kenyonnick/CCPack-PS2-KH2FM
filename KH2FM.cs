@@ -1,15 +1,9 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using ConnectorLib;
+﻿using ConnectorLib;
 using CrowdControl.Common;
 using JetBrains.Annotations;
 using ConnectorType = CrowdControl.Common.ConnectorType;
 using Log = CrowdControl.Common.Log;
 using Timer = System.Timers.Timer;
-using Newtonsoft.Json;
-using System.Linq;
-using System;
-using System.Collections.Generic;
-using System.Threading;
 using CrowdControl.Games.SmartEffects;
 // ReSharper disable CommentTypo
 
@@ -19,7 +13,7 @@ namespace CrowdControl.Games.Packs.KH2FM;
 [UsedImplicitly]
 public partial class KH2FM : PS2EffectPack, IHandlerCollection
 {
-    public override Game Game { get; } = new(name: "Kingdom Hearts II: Final Mix", id: "KH2FM", path: "PS2", ConnectorType.PS2Connector);
+    public override Game Game { get; } = new("Kingdom Hearts II: Final Mix", "KH2FM", "PS2", ConnectorType.PS2Connector);
 
     public override EffectList Effects { get; } = new Effect[] {
         new("Heal Sora", EffectIds.HealSora) {
