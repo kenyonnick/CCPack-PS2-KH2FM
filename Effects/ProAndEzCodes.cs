@@ -22,6 +22,10 @@ public partial class KH2FM {
             EffectIds.HealSora, 
             EffectIds.OneShotSora, 
             EffectIds.Invulnerability,
+            EffectIds.ZeroMPSora,
+            EffectIds.UnlimitedMPSora,
+            EffectIds.ZeroDrive,
+            EffectIds.UnlimitedDrive,
             EffectIds.ProCodes,
             EffectIds.EzCodes
         ];

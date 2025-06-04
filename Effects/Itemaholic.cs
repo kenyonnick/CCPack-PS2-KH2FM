@@ -123,7 +123,7 @@ public partial class KH2FM {
 
         public override bool StopAction() {
             bool success = true;
-            EffectMode effectMode = Lookup(EffectMode.Itemaholic);
+            EffectMode effectMode = Lookup(EffectMode.Itemaholic, EffectMode.BaseItems, EffectMode.Accessories, EffectMode.Armors, EffectMode.Keyblades);
             
             // Write back all saved items for the given effect mode
 

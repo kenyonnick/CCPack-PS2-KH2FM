@@ -13,5 +13,4 @@ public static class DriveAddresses
     public static uint ReactionPopup = 0x21C5FF48;
     public static uint ReactionOption = 0x21C5FF4E;
     public static uint ReactionEnable = 0x21C5FF51;
-    public static uint ButtonPress = 0x2034D45D;
 }
