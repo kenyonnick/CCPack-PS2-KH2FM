@@ -19,7 +19,7 @@ public partial class KH2FM {
             EffectIds.InvisibleEntities
         };
 
-        public override IList<String> Mutexes { get; } = new[] {
+        public override Mutex Mutexes { get; } = new[] {
             EffectIds.UpsideDown,
             EffectIds.InvisibleEntities
         };

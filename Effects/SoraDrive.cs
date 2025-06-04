@@ -16,7 +16,7 @@ public partial class KH2FM {
 
         public override IList<String> Codes { get; } = new[] { EffectIds.ZeroDrive, EffectIds.UnlimitedDrive };
 
-        public override IList<String> Mutexes { get; } = new[] {
+        public override Mutex Mutexes { get; } = new[] {
             EffectIds.ZeroDrive,
             EffectIds.UnlimitedDrive,
             EffectIds.ProCodes,

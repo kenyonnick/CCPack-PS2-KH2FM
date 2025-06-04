@@ -4,7 +4,6 @@ using CrowdControl.Games.SmartEffects;
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using System.Windows.Forms;
 
 // Incomplete. Needs more work but I'm abandoning it for now.
 
@@ -23,7 +22,7 @@ public partial class KH2FM
             EffectIds.DonaldRave,
         };
 
-        public override IList<String> Mutexes { get; } = new[] {
+        public override Mutex Mutexes { get; } = new[] {
             EffectIds.DonaldRave,
         };
 

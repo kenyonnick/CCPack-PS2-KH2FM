@@ -19,7 +19,7 @@ public partial class KH2FM {
             EffectIds.IAmDarkness
         };
 
-        public override IList<String> Mutexes { get; } = new [] { 
+        public override Mutex Mutexes { get; } = new [] { 
             EffectIds.TinyWeapon, 
             EffectIds.GiantWeapon,
             EffectIds.IAmDarkness

@@ -13,7 +13,7 @@ public partial class KH2FM {
 
         public override IList<String> Codes { get; } = [EffectIds.IAmDarkness];
 
-        public override IList<String> Mutexes { get; } = new [] { 
+        public override Mutex Mutexes { get; } = new [] { 
             EffectIds.IAmDarkness, 
             EffectIds.BackseatDriver, 
             EffectIds.HeroSora, 

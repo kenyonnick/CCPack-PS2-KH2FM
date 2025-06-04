@@ -19,7 +19,7 @@ public partial class KH2FM {
             EffectIds.UnlimitedMPSora,
         };
 
-        public override IList<String> Mutexes { get; } = new[] {
+        public override Mutex Mutexes { get; } = new[] {
             EffectIds.ZeroMPSora,
             EffectIds.UnlimitedMPSora,
             EffectIds.ProCodes,

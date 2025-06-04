@@ -16,7 +16,7 @@ public partial class KH2FM {
 
         public override IList<String> Codes { get; } = new[] { EffectIds.ZeroMPDonald, EffectIds.UnlimitedMPDonald };
 
-        public override IList<String> Mutexes { get; } = new[] { EffectIds.ZeroMPDonald, EffectIds.UnlimitedMPDonald };
+        public override Mutex Mutexes { get; } = new[] { EffectIds.ZeroMPDonald, EffectIds.UnlimitedMPDonald };
         
         private bool isZeroMP => Lookup(0, 1) == 0;
         private bool isUnlimitedMP => Lookup(0, 1) == 1;

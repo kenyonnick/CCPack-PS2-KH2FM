@@ -16,7 +16,7 @@ public partial class KH2FM {
 
         public override IList<String> Codes { get; } = new[] { EffectIds.OneShotGoofy, EffectIds.InvulnerableGoofy };
 
-        public override IList<String> Mutexes { get; } = new[] { EffectIds.OneShotGoofy, EffectIds.InvulnerableGoofy };
+        public override Mutex Mutexes { get; } = new[] { EffectIds.OneShotGoofy, EffectIds.InvulnerableGoofy };
         
         private bool isOneShot => Lookup(0, 1) == 0;
         private bool isInvulnerable => Lookup(0, 1) == 1;
