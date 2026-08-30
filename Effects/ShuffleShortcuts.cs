@@ -15,27 +15,26 @@ public partial class KH2FM {
 
         public override Mutex Mutexes { get; } = [EffectIds.ShuffleShortcuts];
 
-        private readonly Random random = new();
         private readonly Dictionary<int, Tuple<int, int>> values = new()
             {
-                { BaseItemAddresses.Potion, new Tuple<int, int>(QuickSlotValues.PotionQuickSlotValue, ItemValues.Potion) }, { BaseItemAddresses.HiPotion, new Tuple<int, int>(QuickSlotValues.HiPotionQuickSlotValue, ItemValues.HiPotion) },
-                { BaseItemAddresses.MegaPotion, new Tuple<int, int>(QuickSlotValues.MegaPotionQuickSlotValue, ItemValues.MegaPotion) }, { BaseItemAddresses.Ether, new Tuple<int, int>(QuickSlotValues.EtherQuickSlotValue, ItemValues.Ether) },
-                { BaseItemAddresses.MegaEther, new Tuple<int, int>(QuickSlotValues.MegaEtherQuickSlotValue, ItemValues.MegaEther) }, { BaseItemAddresses.Elixir, new Tuple<int, int>(QuickSlotValues.ElixirQuickSlotValue, ItemValues.Elixir) },
-                { BaseItemAddresses.Megalixir, new Tuple<int, int>(QuickSlotValues.MegalixirQuickSlotValue, ItemValues.Megalixir) }, { MagicAddresses.Fire, new Tuple<int, int>(QuickSlotValues.FireQuickSlotValue, MagicValues.Fire) },
-                { MagicAddresses.Blizzard, new Tuple<int, int>(QuickSlotValues.BlizzardQuickSlotValue, MagicValues.Blizzard) }, { MagicAddresses.Thunder, new Tuple<int, int>(QuickSlotValues.ThunderQuickSlotValue, MagicValues.Thunder) },
-                { MagicAddresses.Cure, new Tuple<int, int>(QuickSlotValues.CureQuickSlotValue, MagicValues.Cure) }, { MagicAddresses.Reflect, new Tuple<int, int>(QuickSlotValues.ReflectQuickSlotValue, MagicValues.Reflect) },
-                { MagicAddresses.Magnet, new Tuple<int, int>(QuickSlotValues.MagnetQuickSlotValue, MagicValues.Magnet) }
+                { BaseItemAddresses.Potion, new(QuickSlotValues.PotionQuickSlotValue, ItemValues.Potion) }, { BaseItemAddresses.HiPotion, new(QuickSlotValues.HiPotionQuickSlotValue, ItemValues.HiPotion) },
+                { BaseItemAddresses.MegaPotion, new(QuickSlotValues.MegaPotionQuickSlotValue, ItemValues.MegaPotion) }, { BaseItemAddresses.Ether, new(QuickSlotValues.EtherQuickSlotValue, ItemValues.Ether) },
+                { BaseItemAddresses.MegaEther, new(QuickSlotValues.MegaEtherQuickSlotValue, ItemValues.MegaEther) }, { BaseItemAddresses.Elixir, new(QuickSlotValues.ElixirQuickSlotValue, ItemValues.Elixir) },
+                { BaseItemAddresses.Megalixir, new(QuickSlotValues.MegalixirQuickSlotValue, ItemValues.Megalixir) }, { MagicAddresses.Fire, new(QuickSlotValues.FireQuickSlotValue, MagicValues.Fire) },
+                { MagicAddresses.Blizzard, new(QuickSlotValues.BlizzardQuickSlotValue, MagicValues.Blizzard) }, { MagicAddresses.Thunder, new(QuickSlotValues.ThunderQuickSlotValue, MagicValues.Thunder) },
+                { MagicAddresses.Cure, new(QuickSlotValues.CureQuickSlotValue, MagicValues.Cure) }, { MagicAddresses.Reflect, new(QuickSlotValues.ReflectQuickSlotValue, MagicValues.Reflect) },
+                { MagicAddresses.Magnet, new(QuickSlotValues.MagnetQuickSlotValue, MagicValues.Magnet) }
             };
 
-        private ushort shortcut1;
-        private ushort shortcut2;
-        private ushort shortcut3;
-        private ushort shortcut4;
+        private static ushort shortcut1;
+        private static ushort shortcut2;
+        private static ushort shortcut3;
+        private static ushort shortcut4;
 
-        private ulong shortcut1_set;
-        private ulong shortcut2_set;
-        private ulong shortcut3_set;
-        private ulong shortcut4_set;
+        private static ulong shortcut1_set;
+        private static ulong shortcut2_set;
+        private static ulong shortcut3_set;
+        private static ulong shortcut4_set;
 
         private (int, bool) CheckQuickSlot(IPS2Connector Connector, int key, Tuple<int, int> value, int shortcutNumber)
         {
@@ -120,10 +119,10 @@ public partial class KH2FM {
             success &= Connector.Read16LE(EquipmentAddresses.SoraQuickMenuSlot3, out shortcut3);
             success &= Connector.Read16LE(EquipmentAddresses.SoraQuickMenuSlot4, out shortcut4);
 
-            int key1 = values.Keys.ToList()[random.Next(values.Keys.Count)];
-            int key2 = values.Keys.ToList()[random.Next(values.Keys.Count)];
-            int key3 = values.Keys.ToList()[random.Next(values.Keys.Count)];
-            int key4 = values.Keys.ToList()[random.Next(values.Keys.Count)];
+            int key1 = values.Keys.ToList()[RNG.Next(values.Keys.Count)];
+            int key2 = values.Keys.ToList()[RNG.Next(values.Keys.Count)];
+            int key3 = values.Keys.ToList()[RNG.Next(values.Keys.Count)];
+            int key4 = values.Keys.ToList()[RNG.Next(values.Keys.Count)];
 
             (int value1, bool success1) = CheckQuickSlot(Connector, key1, values[key1], 1);
             (int value2, bool success2) = CheckQuickSlot(Connector, key2, values[key2], 2);
